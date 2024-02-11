@@ -9,6 +9,7 @@ import (
     "syscall"
     "time"
     "github.com/yuktea/golang-d/handler"
+    "github.com/joho/godotenv"
 )
 
 func main() {
@@ -16,14 +17,24 @@ func main() {
     // Directly register the handler with the default serve mux.
     http.HandleFunc("/api/cmd", handler.HandleCommand)
 
+    // Load .env file
+    if err := godotenv.Load(); err != nil {
+        log.Println("No .env file found")
+    }
+
+    // Get PORT from environment variables, use a default if not found
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080" // Default port if not specified
+    }
+
     server := &http.Server{
-        Addr: ":8080",
-        // Handler field is omitted, so server uses default ServeMux.
+        Addr: ":" + port, // Use the port from .env or default
     }
 
     // Start the server in a goroutine so that it doesn't block.
     go func() {
-        log.Println("Server is starting on port 8080...")
+        log.Println("Server is starting on Port", server.Addr)
         if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
             log.Fatalf("Could not listen on %s: %v\n", server.Addr, err)
         }
