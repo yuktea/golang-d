@@ -6,14 +6,14 @@ A Go-based web api for executing shell commands via HTTP requests. It returns th
 
 ### Prerequisites
 
-- Go (1.15 or newer)
+- Go (1.21 or newer)
 
 ### Installation
 
 - Clone the repository:
 
 ```
-  git clone https://github.com/yourusername/golang-d.git
+  git clone https://github.com/yuktea/golang-d.git
   cd golang-d
 ```
 
@@ -21,7 +21,7 @@ A Go-based web api for executing shell commands via HTTP requests. It returns th
 - Start the server with:
 
   ```
-  go run cmd/main.go
+  go run main.go
   ```
 - Usage:
   ```
