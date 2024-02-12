@@ -97,4 +97,4 @@ func checkIfNotPost(w http.ResponseWriter, r *http.Request) bool {
 // curl -X POST 'http://localhost:5555/api/cmd' \
 // -H 'Content-Type: application/json' \
 // -d '{"command": "echo Hello World"}'
-// curl -X POST 'http://localhost:5555/api/cmd?command=echo%20Hello%20World'
+

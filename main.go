@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"github.com/joho/godotenv"
 	"github.com/yuktea/golang-d/handler"
 	"log"
@@ -9,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 func main() {
@@ -32,7 +30,7 @@ func main() {
 		Addr: ":" + port, // Use the port from .env or default
 	}
 
-	// Start the server in a goroutine so that it doesn't block.
+	// Starting the server in a goroutine so that it doesn't block.
 	go func() {
 		log.Println("Server is starting on Port", server.Addr)
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -40,22 +38,18 @@ func main() {
 		}
 	}()
 
-	// Setup channel to listen for interrupt or termination signals from the OS.
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+    // Setup channel to listen for interrupt or termination signals from the OS
+    quit := make(chan os.Signal, 1)
+    signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
-	// Block until a signal is received.
-	<-quit
-	log.Println("Server is shutting down...")
+    // Block until a signal is received ie, quit has value
+    <-quit
+    log.Println("Server is shutting down...")
 
-	// Create a context with a timeout for the graceful shutdown.
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+    // Attempt to gracefully shut down the server
+    if err := server.Shutdown(nil); err != nil {
+        log.Fatalf("Server forced to shutdown: %v", err)
+    }
 
-	// Attempt to gracefully shut down the server.
-	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("Server forced to shutdown: %v", err)
-	}
-
-	log.Println("Server exited gracefully")
+    log.Println("Server exited gracefully")
 }
